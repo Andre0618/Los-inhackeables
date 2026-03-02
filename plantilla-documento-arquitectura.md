@@ -1,5 +1,3 @@
-
-
 # Documento de Arquitectura del Sistema de Gestión de Órdenes y Entregas
 
 ## 1. Introducción  
@@ -34,11 +32,11 @@ Entonces el sistema debe mostrar nombre, categoría, precio y disponibilidad.
 
 * Dado que un producto tiene stock mayor a 0
 Cuando se muestra en el catálogo
-Entonces debe aparecer como “Disponible”.
+Entonces debe aparecer como Disponible.
 
 * Dado que un producto tiene stock igual a 0
 Cuando se consulta el catálogo
-Entonces debe aparecer como “Agotado”.
+Entonces debe aparecer como Agotado.
 
 * Dado que el inventario cambia
 Cuando el cliente actualiza la vista del catálogo
@@ -88,7 +86,7 @@ Para comprar y recibir los artículos en mi domicilio"*
 
 * Dado que el pedido es confirmado correctamente
   Cuando el sistema procesa la compra
-  Entonces debe registrar el pedido, cambiar el estado a “Aprobado”, descontar el stock correspondiente y registrar el pago como “Pagado”.
+  Entonces debe registrar el pedido, cambiar el estado a Aprobado, descontar el stock correspondiente y registrar el pago como Pagado.
 
 ##### Cumplimiento de INVEST:
 
@@ -120,7 +118,7 @@ Para saber qué está pasando con mi compra sin llamar"*
   Cuando consulta el detalle del pedido
   Entonces debe visualizar el estado actual (Aprobado, Empacado, En ruta, Entregado, Cancelado).
 
-* Dado que el pedido está en estado “En ruta”
+* Dado que el pedido está en estado En ruta
   Cuando el repartidor actualiza su estado
   Entonces el cliente debe ver el cambio reflejado en máximo 30 segundos.
 
@@ -204,7 +202,7 @@ Para garantizar una distribución ordenada y controlada"*
 
 ##### Criterios de aceptación:
 
-* Dado que un pedido está en estado “Empacado”
+* Dado que un pedido está en estado Empacado
   Cuando el operador lo asigna a un repartidor
   Entonces el sistema debe registrar la asignación con fecha y hora.
 
@@ -214,7 +212,7 @@ Para garantizar una distribución ordenada y controlada"*
 
 * Dado que el pedido ha sido asignado
   Cuando el repartidor confirma la salida
-  Entonces el estado debe cambiar a “En ruta”.
+  Entonces el estado debe cambiar a En ruta.
 
 * Dado que ocurre una novedad
   Cuando el operador decide reasignar
@@ -247,10 +245,10 @@ Para dejar evidencia de situaciones que afecten el pedido"*
 ##### Criterios de aceptación:
 
 * Dado que el repartidor está asignado a un pedido
-  Cuando marca el pedido como “Entregado”
+  Cuando marca el pedido como Entregado
   Entonces el sistema debe actualizar el estado y registrar fecha y hora.
 
-* Dado que ocurre una situación como “Dirección errada” o “Cliente ausente”
+* Dado que ocurre una situación como Dirección errada o Cliente ausente
   Cuando el repartidor la registra
   Entonces el sistema debe almacenar la novedad con comentario obligatorio.
 
@@ -304,15 +302,26 @@ Los requisitos de calidad se presentan en forma de **historias de calidad**, sig
 Las restricciones establecen **limitaciones** en la arquitectura del sistema, ya sean tecnológicas, de negocio, regulatorias o de infraestructura.
 
 ### **Lista de Restricciones**
-| **Tipo de Restricción** | **Descripción**                                                                                                                                                          |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| _[Agregar otro tipo]_   | _[Describir la restricción]_                                                                                                                                             |
+| **ID**    | **Restricción**                                                                                                                                                          | **Evidencia (cita del relato)**                                                                                     |
+|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------|
+| **R-01** | El sistema debe implementarse con Spring Boot y arquitectura de microservicios.                                                                                          | Se debe implementar con Spring Boot y arquitectura por microservicios, con un API Gateway (Spring Cloud Gateway o Kong). |
+| **R-02** | El sistema debe incluir un API Gateway para controlar acceso, seguridad y enrutamiento.                                                                                  | Se debe implementar con Spring Boot y arquitectura por microservicios, con un API Gateway (Spring Cloud Gateway o Kong). |
+| **R-03** | La autenticación debe realizarse con OAuth2 y JWT.                                                                                                                       | Autenticación con OAuth2 y JWT.                                                                                   |
+| **R-04** | La mensajería asíncrona debe implementarse con Kafka o RabbitMQ.                                                                                                         | Mensajería asíncrona con Kafka o RabbitMQ.                                                                        |
+| **R-05** | El despliegue debe realizarse en Kubernetes con integración y despliegue continuo (CI/CD) utilizando GitHub Actions.                                                     | Despliegue en Kubernetes y CI/CD con GitHub Actions.                                                             |
+| **R-06** | El monitoreo debe realizarse con Prometheus y Grafana, y los logs deben ser centralizados con alertas configuradas.                                                      | Monitoreo con Prometheus y Grafana, más logs centralizados y alertas.                                            |
+| **R-07** | El sistema debe garantizar que no haya pérdida ni duplicación de mensajes en los flujos de mensajería/eventos.                                                           | En los flujos donde usemos mensajería/eventos, no podemos permitir pérdida de mensajes ni duplicaciones que dañen el negocio. |
+| **R-08** | Los tiempos de respuesta de los servicios críticos no deben superar los 300 ms en condiciones de carga normal.                                                           | En horas pico, la atención debe sentirse ágil: tecnología nos puso como referencia que, si un servicio tarda más de 300 ms en responder, debemos revisar cuellos de botella. |
+| **R-09** | El sistema debe ser capaz de escalar dinámicamente para manejar incrementos sostenidos de carga sin interrumpir a los usuarios.                                           | Y si la carga sube de forma sostenida, debe ser posible levantar más instancias sin interrumpir a los usuarios.   |
+| **R-10** | Los accesos al sistema deben ser controlados por roles y se deben detectar intentos sospechosos de acceso.                                                               | Los accesos deben ser por roles y se debe detectar y reaccionar ante intentos sospechosos (por ejemplo, múltiples intentos fallidos de autenticación o uso de tokens inválidos). |
+| **R-11** | El sistema debe registrar métricas, logs y alertas para garantizar trazabilidad y permitir la detección de errores o anomalías.                                           | El sistema debe dejar trazabilidad. Necesitamos métricas, logs y alertas.                                        |
 
->  **Tipos de restricciones:**  
+
+> **Tipos de restricciones:**
 > - **Tecnológicas:** Lenguajes, frameworks o herramientas que deben utilizarse.  
 > - **De negocio:** Normativas o estándares de la empresa.  
 > - **Regulatorias:** Cumplimiento de normativas legales o de seguridad.  
-> - **De infraestructura:** Limitaciones en hardware, red o almacenamiento.  
+> - **De infraestructura:** Limitaciones en hardware, red o almacenamiento.
 
 
 
