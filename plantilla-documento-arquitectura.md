@@ -285,16 +285,21 @@ Testable: Control de acceso y actualización verificables.
 ## 3. Requisitos de Calidad  
 Los requisitos de calidad se presentan en forma de **historias de calidad**, siguiendo la estructura de Len Bass.
 
+
 ### **Historias de Calidad**
 | **ID**    | **Fuente**         | **Estímulo**         | **Artefactos**         | **Entorno**         | **Respuesta**         | **Medida de Respuesta**         |
 | --------- | ------------------ | -------------------- | ---------------------- | ------------------- | --------------------- | ------------------------------- |
-| **RQ-01** | _[Agregar fuente]_ | _[Agregar estímulo]_ | _[Agregar artefactos]_ | _[Agregar entorno]_ | _[Agregar respuesta]_ | _[Agregar medida de respuesta]_ |
-| **RQ-02** | _[Agregar fuente]_ | _[Agregar estímulo]_ | _[Agregar artefactos]_ | _[Agregar entorno]_ | _[Agregar respuesta]_ | _[Agregar medida de respuesta]_ |
-| **RQ-03** | _[Agregar fuente]_ | _[Agregar estímulo]_ | _[Agregar artefactos]_ | _[Agregar entorno]_ | _[Agregar respuesta]_ | _[Agregar medida de respuesta]_ |
+| **RQ-01** | Cliente | Consulta el catálogo de productos | API de catálogo / servicio de productos | Condiciones normales (carga promedio) | El sistema debe procesar la solicitud y retornar la lista de productos con su información | El tiempo de respuesta no debe superar **300 ms en el 95% de las solicitudes** |
+| **RQ-02** | Cliente autenticado| Confirma un pedido | Servicio de pedidos |Condiciones normales | El sistema debe validar, registrar el pedido, actualizar el inventario y confirmar la transacción| El proceso completo debe ejecutarse en **menos de 500 ms en el 95% de los casos** |
+| **RQ-03** | Usuario (cliente, administrador, repartidor) | Usuario (cliente, administrador, repartidor) | Plataforma completa (microservicios + API Gateway) | Operación continua (24/7) | El sistema debe estar disponible para atender solicitudes | Disponibilidad mínima de **99.5% mensual** |
+| **RQ-04** | Incremento de usuarios concurrentes| Aumento sostenido de carga | Infraestructura en Kubernetes | Hora pico | El sistema debe escalar automáticamente agregando instancias sin interrumpir el servicio | Escalar hasta **3x la carga normal en menos de 2 minutos** sin degradar el tiempo de respuesta por encima de **500 ms** |
+| **RQ-05** | Usuario malicioso o error de autenticación| Múltiples intentos fallidos de inicio de sesión | Servicio de autenticación (OAuth2 / JWT) | Operación normal| El sistema debe bloquear temporalmente el acceso y registrar el evento | Bloqueo tras **5 intentos fallidos consecutivos en menos de 2 minutos** y registro del evento en logs |
+| **RQ-06** | Usuario no autorizado | Intenta acceder a recursos de otro usuario | API Gateway / servicios protegidos | Operación normal | El sistema debe rechazar la solicitud y registrar el intento | Respuesta con código **HTTP 403 en menos de 200 ms** y registro en logs de seguridad|
+| **RQ-07** | Evento de negocio (pedido confirmado, actualización de estado)| Envío de mensajes a través del sistema de mensajería| Broker de mensajería (Kafka o RabbitMQ) | Alta concurrencia |El sistema debe garantizar que los mensajes se entreguen una sola vez sin pérdida ni duplicación| Tasa de pérdida de mensajes **0%** y duplicación **menor al 0.01%**|
+| **RQ-08** | Sistema de gestión de pedidos (evento interno)| Se actualiza el estado de un pedido o se registra una novedad| Servicio de pedidos / servicio de notificaciones / frontend web | Operación normal | El sistema debe propagar el cambio de estado y reflejarlo en la interfaz del cliente | El estado debe visualizarse actualizado en la interfaz en un máximo de **30 segundos en el 100% de los casos** |
+| **RQ-09** | Sistema de monitoreo | Ocurre un error o degradación del servicio | Sistema de monitoreo (Prometheus, Grafana, logs centralizados) | Operación normal o alta carga | El sistema debe registrar métricas, generar logs y activar alertas| La alerta debe generarse en **menos de 1 minuto** desde la ocurrencia del error|
+| **RQ-10** | Equipo de desarrollo | Se requiere desplegar una nueva versión de un microservicio | Pipeline CI/CD (GitHub Actions + Kubernetes)| Producción |El sistema debe permitir despliegues sin afectar la disponibilidad | Despliegue con **cero downtime** o interrupciones menores a **30 segundos** |
 
->  **Instrucciones:**  
-> - Completar al menos **6 historias de calidad**, alineadas con atributos clave como **rendimiento, escalabilidad y seguridad**.  
-> - Definir cómo se medirá la respuesta esperada ante la situación planteada.  
 
 ---
 
